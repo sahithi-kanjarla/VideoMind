@@ -1,7 +1,7 @@
 import re
 from urllib.parse import parse_qs, urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
-
+from app.models.source import NormalizedSource, TranscriptSegment
 
 YOUTUBE_HOSTS = {
     "youtube.com",
@@ -81,3 +81,27 @@ def fetch_transcript(url: str) -> list[dict]:
             ]
 
     raise ValueError("No English transcript available for this video")
+
+def normalize_youtube_transcript(
+    url: str,
+    segments: list[dict],
+) -> NormalizedSource:
+    """Convert YouTube transcript segments into the VideoMind format."""
+
+    video_id = extract_video_id(url)
+
+    normalized_segments = [
+        TranscriptSegment(
+            text=segment["text"],
+            start=segment["start"],
+            end=segment["start"] + segment["duration"],
+        )
+        for segment in segments
+    ]
+
+    return NormalizedSource(
+        source_id=video_id,
+        source_type="youtube",
+        uri=url,
+        segments=normalized_segments,
+    )
