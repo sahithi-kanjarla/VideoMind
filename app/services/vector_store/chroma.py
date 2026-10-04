@@ -4,14 +4,19 @@ from app.models.chunk import TranscriptChunk
 
 
 class ChromaVectorStore:
-    """Store and retrieve VideoMind transcript chunks using Chroma."""
-
     COLLECTION_NAME = "videomind_chunks"
 
-    def __init__(self, persist_directory: str = "chroma"):
-        self.client = chromadb.PersistentClient(
-            path=persist_directory
-        )
+    def __init__(
+        self,
+        persist_directory: str = "chroma",
+        client=None,
+    ):
+        if client is not None:
+            self.client = client
+        else:
+            self.client = chromadb.PersistentClient(
+                path=persist_directory
+            )
 
         self.collection = self.client.get_or_create_collection(
             name=self.COLLECTION_NAME,
@@ -23,8 +28,6 @@ class ChromaVectorStore:
         chunks: list[TranscriptChunk],
         embeddings: list[list[float]],
     ) -> None:
-        """Store transcript chunks and their embeddings."""
-
         if len(chunks) != len(embeddings):
             raise ValueError(
                 "Number of chunks must match number of embeddings"
@@ -50,8 +53,6 @@ class ChromaVectorStore:
         query_embedding: list[float],
         top_k: int = 5,
     ) -> dict:
-        """Search for the most similar chunks."""
-
         return self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
