@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     environment: str = "development"
 
     gemini_api_key: str | None = None
+    gemini_model: str = "gemini-2.5-flash"
+    chroma_path: str = "chroma"
     groq_api_key: str | None = None
     sarvam_api_key: str | None = None
 

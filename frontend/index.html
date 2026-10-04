@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VideoMind — Understand your videos</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header><div class="brand-mark">V</div><div><h1>VideoMind</h1><p>Understand your videos.</p></div></header>
+    <form id="load-form" class="load-form">
+      <label class="sr-only" for="youtube-url">YouTube URL</label>
+      <input id="youtube-url" type="url" placeholder="Paste a YouTube URL" required>
+      <button id="load-button" type="submit">Load video</button>
+    </form>
+    <p id="load-status" class="status" role="status">Load a video to get started.</p>
+    <section id="video-section" class="video-section" hidden>
+      <div class="player"><div id="player"></div></div>
+      <h2 id="video-title"></h2>
+      <p class="ready"><span>✓</span> Ready to answer questions</p>
+      <form id="ask-form" class="ask-form">
+        <label for="question">Ask anything about this video</label>
+        <div class="ask-row"><input id="question" maxlength="2000" placeholder="What is the main argument?" required disabled><button id="ask-button" disabled>Ask</button></div>
+      </form>
+      <section id="answer-section" class="answer" hidden>
+        <h3>Answer</h3><p id="answer-text"></p>
+        <h3>Sources</h3><div id="sources" class="sources"></div>
+      </section>
+    </section>
+    <p id="error" class="error" role="alert" hidden></p>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>
