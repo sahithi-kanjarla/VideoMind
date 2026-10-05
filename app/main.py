@@ -14,8 +14,6 @@ app = FastAPI(
 
 app.include_router(youtube_router)
 frontend_path = Path(__file__).resolve().parents[1] / "frontend"
-if frontend_path.is_dir():
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
 
 
 @app.get("/health")
@@ -24,3 +22,14 @@ def health_check():
         "status": "ok",
         "service": settings.app_name,
     }
+
+
+if frontend_path.is_dir():
+    # Support both the application root and the path users commonly open
+    # while working from the repository layout.
+    app.mount(
+        "/frontend",
+        StaticFiles(directory=frontend_path, html=True),
+        name="frontend-files",
+    )
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
