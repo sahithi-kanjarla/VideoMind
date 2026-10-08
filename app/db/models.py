@@ -46,7 +46,7 @@ class Source(Base):
     source_type = Column(String(50), nullable=False)  # youtube, video, audio, pdf, text
     uri = Column(Text, nullable=True)  # URL or file path
     status = Column(String(50), default="processing", nullable=False)  # processing, ready, error
-    metadata = Column(JSON, default={}, nullable=False)  # duration, pages, language, error_msg, etc.
+    meta_data = Column(JSON, default={}, nullable=False)  # duration, pages, language, error_msg, etc.
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -63,7 +63,7 @@ class Chunk(Base):
     source_id = Column(String(36), ForeignKey("sources.id"), nullable=False, index=True)
     chunk_index = Column(Integer, nullable=False)  # Position in source
     text = Column(Text, nullable=False)
-    metadata = Column(JSON, default={}, nullable=False)  # timestamps, page_num, heading, etc.
+    meta_data = Column(JSON, default={}, nullable=False)  # timestamps, page_num, heading, etc.
     chroma_id = Column(String(255), nullable=True, unique=True)  # Reference to Chroma vector store
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 

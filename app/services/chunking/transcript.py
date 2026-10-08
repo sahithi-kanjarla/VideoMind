@@ -72,6 +72,7 @@ def _create_chunk(
         start=start,
         end=end,
         metadata={
+            "chunk_id": f"{source_id}-{chunk_number}",
             "segment_count": len(segments),
         },
     )

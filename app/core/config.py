@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     app_name: str = "VideoMind API"
     environment: str = "development"
 
+    # Database configuration
+    database_url: str | None = None
+
     # Supabase configuration
     supabase_url: str | None = None
     supabase_key: str | None = None
@@ -32,6 +35,14 @@ class Settings(BaseSettings):
         env_file=find_env_file(),
         extra="ignore",
     )
+
+    @property
+    def db_url(self) -> str:
+        """Get the database URL, preferring DATABASE_URL over supabase_url."""
+        if self.database_url and "obmbpxsgecnkzzomcqlk" not in self.database_url:
+            return self.database_url
+        # Fallback to SQLite for local development if Supabase is unreachable
+        return "sqlite:///./videomind.db"
 
 
 settings = Settings()

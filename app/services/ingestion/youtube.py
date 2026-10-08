@@ -1,5 +1,7 @@
 import re
+import json
 from urllib.parse import parse_qs, urlparse
+from urllib.request import urlopen
 from youtube_transcript_api import YouTubeTranscriptApi
 from app.models.source import NormalizedSource, TranscriptSegment
 
@@ -50,12 +52,18 @@ def fetch_transcript(url: str) -> list[dict]:
     video_id = extract_video_id(url)
 
     api = YouTubeTranscriptApi()
-    transcripts = api.list(video_id)
+    try:
+        transcripts = api.list(video_id)
+    except Exception as exc:
+        raise ValueError(f"Transcript unavailable: {exc}") from exc
 
     # Prefer manually created English transcripts.
     for transcript in transcripts:
         if transcript.language_code.startswith("en") and not transcript.is_generated:
-            fetched = transcript.fetch()
+            try:
+                fetched = transcript.fetch()
+            except Exception as exc:
+                raise ValueError(f"Transcript unavailable: {exc}") from exc
 
             return [
                 {
@@ -69,7 +77,10 @@ def fetch_transcript(url: str) -> list[dict]:
     # Fall back to generated English transcripts.
     for transcript in transcripts:
         if transcript.language_code.startswith("en") and transcript.is_generated:
-            fetched = transcript.fetch()
+            try:
+                fetched = transcript.fetch()
+            except Exception as exc:
+                raise ValueError(f"Transcript unavailable: {exc}") from exc
 
             return [
                 {
@@ -81,6 +92,20 @@ def fetch_transcript(url: str) -> list[dict]:
             ]
 
     raise ValueError("No English transcript available for this video")
+
+
+def fetch_video_title(url: str, fallback: str) -> str:
+    """Return the public YouTube oEmbed title, falling back to the video ID."""
+    import urllib.parse
+
+    endpoint = "https://www.youtube.com/oembed?" + urllib.parse.urlencode(
+        {"url": url, "format": "json"}
+    )
+    try:
+        with urlopen(endpoint, timeout=5) as response:
+            return json.loads(response.read()).get("title") or fallback
+    except Exception:
+        return fallback
 
 def normalize_youtube_transcript(
     url: str,

@@ -40,9 +40,9 @@ class ChromaVectorStore:
             metadatas=[
                 {
                     "source_id": chunk.source_id,
+                    **chunk.metadata,
                     "start": chunk.start,
                     "end": chunk.end,
-                    **chunk.metadata,
                 }
                 for chunk in chunks
             ],
@@ -52,8 +52,13 @@ class ChromaVectorStore:
         self,
         query_embedding: list[float],
         top_k: int = 5,
+        source_id: str | None = None,
     ) -> dict:
+        options = {}
+        if source_id:
+            options["where"] = {"source_id": source_id}
         return self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
+            **options,
         )

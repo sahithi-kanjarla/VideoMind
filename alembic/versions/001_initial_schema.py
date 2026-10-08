@@ -37,7 +37,7 @@ def upgrade() -> None:
         sa.Column('source_type', sa.String(50), nullable=False),
         sa.Column('uri', sa.Text(), nullable=True),
         sa.Column('status', sa.String(50), nullable=False),
-        sa.Column('metadata', sa.JSON(), nullable=False),
+        sa.Column('meta_data', sa.JSON(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id')
@@ -51,7 +51,7 @@ def upgrade() -> None:
         sa.Column('source_id', sa.String(36), nullable=False),
         sa.Column('chunk_index', sa.Integer(), nullable=False),
         sa.Column('text', sa.Text(), nullable=False),
-        sa.Column('metadata', sa.JSON(), nullable=False),
+        sa.Column('meta_data', sa.JSON(), nullable=False),
         sa.Column('chroma_id', sa.String(255), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.ForeignKeyConstraint(['source_id'], ['sources.id'], ),
