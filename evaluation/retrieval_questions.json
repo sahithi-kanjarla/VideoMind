@@ -58,5 +58,110 @@
   {
     "question": "What happens when people constantly seek stimulation?",
     "relevant_chunks": ["Y681hXWwhQY-7"]
+  },
+
+  {
+    "question": "Why might being inactive actually be useful for animals?",
+    "relevant_chunks": ["Y681hXWwhQY-2"]
+  },
+  {
+    "question": "What is one example of an animal that spends a lot of time sleeping?",
+    "relevant_chunks": ["Y681hXWwhQY-3"]
+  },
+  {
+    "question": "Which animal is described as moving extremely slowly?",
+    "relevant_chunks": ["Y681hXWwhQY-9"]
+  },
+  {
+    "question": "What percentage of ants may be inactive at a given time?",
+    "relevant_chunks": ["Y681hXWwhQY-5"]
+  },
+  {
+    "question": "What could inactive ants be doing instead of working?",
+    "relevant_chunks": ["Y681hXWwhQY-5"]
+  },
+  {
+    "question": "According to Dr Sandi Mann, what can boredom encourage?",
+    "relevant_chunks": ["Y681hXWwhQY-6", "Y681hXWwhQY-7"]
+  },
+  {
+    "question": "How can having nothing to do lead people towards new ideas?",
+    "relevant_chunks": ["Y681hXWwhQY-6", "Y681hXWwhQY-7", "Y681hXWwhQY-8"]
+  },
+  {
+    "question": "What does the expression switching off refer to in the video?",
+    "relevant_chunks": ["Y681hXWwhQY-8", "Y681hXWwhQY-10"]
+  },
+  {
+    "question": "What does it mean to describe someone as industrious?",
+    "relevant_chunks": ["Y681hXWwhQY-4", "Y681hXWwhQY-5", "Y681hXWwhQY-9"]
+  },
+  {
+    "question": "What does kicking back mean in the context of the video?",
+    "relevant_chunks": ["Y681hXWwhQY-1", "Y681hXWwhQY-9"]
+  },
+  {
+    "question": "How does the video explain the idea of a colony?",
+    "relevant_chunks": ["Y681hXWwhQY-9", "Y681hXWwhQY-10"]
+  },
+  {
+    "question": "How is the idea that necessity leads to invention connected to boredom?",
+    "relevant_chunks": ["Y681hXWwhQY-8", "Y681hXWwhQY-10"]
+  },
+  {
+    "question": "What is the relationship between inactivity and survival in ants discussed in the video?",
+    "relevant_chunks": ["Y681hXWwhQY-5"]
+  },
+  {
+    "question": "How are animal inactivity and human boredom connected in the discussion?",
+    "relevant_chunks": [
+      "Y681hXWwhQY-2",
+      "Y681hXWwhQY-5",
+      "Y681hXWwhQY-6",
+      "Y681hXWwhQY-7"
+    ]
+  },
+  {
+    "question": "How does the discussion move from animals doing nothing to the benefits of boredom?",
+    "relevant_chunks": [
+      "Y681hXWwhQY-2",
+      "Y681hXWwhQY-5",
+      "Y681hXWwhQY-6",
+      "Y681hXWwhQY-7"
+    ]
+  },
+  {
+    "question": "How does the video connect boredom, switching off, and invention?",
+    "relevant_chunks": [
+      "Y681hXWwhQY-6",
+      "Y681hXWwhQY-7",
+      "Y681hXWwhQY-8",
+      "Y681hXWwhQY-10"
+    ]
+  },
+
+  {
+    "question": "What is the capital of France?",
+    "relevant_chunks": []
+  },
+  {
+    "question": "What programming language is used to build the system discussed in the video?",
+    "relevant_chunks": []
+  },
+  {
+    "question": "Who is the president of the United States?",
+    "relevant_chunks": []
+  },
+  {
+    "question": "What year was the internet invented?",
+    "relevant_chunks": []
+  },
+  {
+    "question": "What is the tallest mountain in the world?",
+    "relevant_chunks": []
+  },
+  {
+    "question": "How does artificial intelligence work?",
+    "relevant_chunks": []
   }
 ]
