@@ -1,3 +1,9 @@
+"""Deprecated YouTube-specific API endpoints.
+
+These endpoints are kept for backward compatibility during the transition
+to the unified /api/conversations/{id}/sources and /api/conversations/{id}/chat
+endpoints. They will be removed once the React frontend is wired to the new API.
+"""
 from fastapi import APIRouter, HTTPException
 
 from app.schemas.youtube import (
@@ -11,7 +17,7 @@ from app.services.ingestion.youtube import extract_video_id
 from app.services.rag.groq_service import GroqGenerationError
 from app.services.youtube_qa import YouTubeQA
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api", tags=["youtube-deprecated"])
 _qa: YouTubeQA | None = None
 
 

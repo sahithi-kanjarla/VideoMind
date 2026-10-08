@@ -1,6 +1,6 @@
 import chromadb
 
-from app.models.chunk import TranscriptChunk
+from app.models.chunk import ContentChunk
 
 
 class ChromaVectorStore:
@@ -25,7 +25,7 @@ class ChromaVectorStore:
 
     def add_chunks(
         self,
-        chunks: list[TranscriptChunk],
+        chunks: list[ContentChunk],
         embeddings: list[list[float]],
     ) -> None:
         if len(chunks) != len(embeddings):
@@ -52,11 +52,14 @@ class ChromaVectorStore:
         self,
         query_embedding: list[float],
         top_k: int = 5,
-        source_id: str | None = None,
+        source_ids: list[str] | None = None,
     ) -> dict:
         options = {}
-        if source_id:
-            options["where"] = {"source_id": source_id}
+        if source_ids:
+            if len(source_ids) == 1:
+                options["where"] = {"source_id": source_ids[0]}
+            else:
+                options["where"] = {"source_id": {"$in": source_ids}}
         return self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,

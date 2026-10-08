@@ -22,13 +22,13 @@ class Retriever:
         # Safety limit so one query cannot flood the LLM context.
         self.max_results = max_results
 
-    def retrieve(self, query: str, source_id: str | None = None) -> list[dict]:
+    def retrieve(self, query: str, source_ids: list[str] | None = None) -> list[dict]:
         query_embedding = self.embedding_service.embed_query(query)
 
         results = self.vector_store.search(
             query_embedding=query_embedding,
             top_k=self.candidate_k,
-            source_id=source_id,
+            source_ids=source_ids,
         )
 
         candidate_ids = results["ids"][0]

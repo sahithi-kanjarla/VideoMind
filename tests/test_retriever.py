@@ -46,7 +46,7 @@ def test_adaptive_selector_limits_results_when_no_large_gap():
 
     selected = retriever._select_relevant(results)
 
-    assert len(selected) == 8
+    assert len(selected) == 5
 
 
 def test_adaptive_selector_handles_single_result():

@@ -3,7 +3,7 @@ from functools import lru_cache
 from app.core.config import settings
 from app.models.source import NormalizedSource
 from app.schemas.youtube import SourceTimestamp
-from app.services.chunking.transcript import chunk_transcript
+from app.services.chunking.content import chunk_content
 from app.services.embeddings.service import EmbeddingService
 from app.services.ingestion.youtube import (
     extract_video_id,
@@ -34,7 +34,7 @@ class YouTubeQA:
         video_id = extract_video_id(url)
         raw_segments = fetch_transcript(url)
         source: NormalizedSource = normalize_youtube_transcript(url, raw_segments)
-        chunks = chunk_transcript(source.source_id, source.segments)
+        chunks = chunk_content(source.source_id, source.segments)
         if not chunks:
             raise ValueError("The video transcript is empty.")
         for chunk in chunks:
@@ -61,7 +61,7 @@ class YouTubeQA:
         video = self.videos.get(video_id)
         if video is None:
             raise LookupError("Video is not loaded. Load its YouTube URL first.")
-        context = self.retriever.retrieve(question, source_id=video_id)
+        context = self.retriever.retrieve(question, source_ids=[video_id])
         if not context:
             return {"answer": "I couldn't find information about that in this video's transcript.", "sources": []}
         answer = self.generator.answer(question, context)

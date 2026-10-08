@@ -1,9 +1,10 @@
 import re
 import json
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 from urllib.request import urlopen
 from youtube_transcript_api import YouTubeTranscriptApi
-from app.models.source import NormalizedSource, TranscriptSegment
+from app.models.source import ContentSegment, NormalizedSource
 
 YOUTUBE_HOSTS = {
     "youtube.com",
@@ -116,7 +117,7 @@ def normalize_youtube_transcript(
     video_id = extract_video_id(url)
 
     normalized_segments = [
-        TranscriptSegment(
+        ContentSegment(
             text=segment["text"],
             start=segment["start"],
             end=segment["start"] + segment["duration"],
@@ -130,3 +131,15 @@ def normalize_youtube_transcript(
         uri=url,
         segments=normalized_segments,
     )
+
+
+class YouTubeIngestor:
+    source_type = "youtube"
+
+    def ingest(self, input_value: str | Path, **kwargs) -> NormalizedSource:
+        url = str(input_value)
+        extract_video_id(url)
+        raw_segments = fetch_transcript(url)
+        source = normalize_youtube_transcript(url, raw_segments)
+        source.title = fetch_video_title(url, f"YouTube video {source.source_id}")
+        return source

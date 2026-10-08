@@ -7,17 +7,24 @@ SourceType = Literal[
     "video",
     "audio",
     "pdf",
-    "document",
-    "web",
-    "meeting",
+    "docx",
+    "text",
+    "markdown",
+    "paste",
 ]
 
 
-class TranscriptSegment(BaseModel):
+class ContentSegment(BaseModel):
     text: str
     start: float | None = None
     end: float | None = None
     speaker: str | None = None
+    page: int | None = None
+    section: str | None = None
+    paragraph_index: int | None = None
+
+
+TranscriptSegment = ContentSegment
 
 
 class NormalizedSource(BaseModel):
@@ -26,4 +33,4 @@ class NormalizedSource(BaseModel):
     title: str | None = None
     uri: str | None = None
     language: str | None = None
-    segments: list[TranscriptSegment] = Field(default_factory=list)
+    segments: list[ContentSegment] = Field(default_factory=list)
