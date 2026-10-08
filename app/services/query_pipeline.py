@@ -38,9 +38,10 @@ class QueryPipeline:
         conversation_id: str,
         source_type: str,
         input_value: str | Path,
+        title: str | None = None,
     ) -> dict:
         ingestor = get_ingestor(source_type)
-        normalized = ingestor.ingest(input_value)
+        normalized = ingestor.ingest(input_value, title=title) if title else ingestor.ingest(input_value)
 
         chunks = chunk_content(normalized.source_id, normalized.segments)
         if not chunks:

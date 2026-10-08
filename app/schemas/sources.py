@@ -21,3 +21,12 @@ class SourceStatusResponse(BaseModel):
     id: str
     status: str
     metadata: dict = {}
+
+
+# Allowed file extensions per source type
+UPLOAD_EXTENSIONS: dict[str, list[str]] = {
+    "pdf": [".pdf"],
+    "docx": [".docx"],
+    "text": [".txt"],
+    "markdown": [".md", ".markdown"],
+}

@@ -1,7 +1,15 @@
 """API endpoints for source management."""
-from fastapi import APIRouter, HTTPException
+import tempfile
+from pathlib import Path
 
-from app.schemas.sources import AddYouTubeSourceRequest, SourceResponse, SourceStatusResponse
+from fastapi import APIRouter, HTTPException, UploadFile
+
+from app.schemas.sources import (
+    AddYouTubeSourceRequest,
+    SourceResponse,
+    SourceStatusResponse,
+    UPLOAD_EXTENSIONS,
+)
 from app.services.conversation_service import ConversationService
 from app.services.ingestion.registry import registered_types
 from app.services.rag.groq_service import GroqGenerationError
@@ -25,7 +33,7 @@ def get_pipeline():
     response_model=dict,
 )
 def add_source(conversation_id: str, request: AddYouTubeSourceRequest):
-    """Add a source to a conversation."""
+    """Add a URL-based source (YouTube) to a conversation."""
     conversation = ConversationService.get(conversation_id)
     if conversation is None:
         raise HTTPException(404, "Conversation not found")
@@ -49,6 +57,58 @@ def add_source(conversation_id: str, request: AddYouTubeSourceRequest):
         raise HTTPException(502, str(exc)) from exc
     except Exception as exc:
         raise HTTPException(502, f"Source ingestion failed: {exc}") from exc
+
+
+@router.post(
+    "/conversations/{conversation_id}/sources/upload",
+    response_model=dict,
+)
+def upload_source(conversation_id: str, file: UploadFile):
+    """Upload a file (PDF, DOCX, TXT, Markdown) as a source."""
+    conversation = ConversationService.get(conversation_id)
+    if conversation is None:
+        raise HTTPException(404, "Conversation not found")
+
+    suffix = Path(file.filename or "").suffix.lower()
+
+    # Determine source type from file extension
+    source_type = None
+    for stype, extensions in UPLOAD_EXTENSIONS.items():
+        if suffix in extensions:
+            source_type = stype
+            break
+
+    if source_type is None:
+        allowed = [ext for exts in UPLOAD_EXTENSIONS.values() for ext in exts]
+        raise HTTPException(
+            422, f"Unsupported file type: {suffix}. Allowed: {', '.join(allowed)}"
+        )
+
+    if source_type not in registered_types():
+        raise HTTPException(422, f"Ingestor not available for: {source_type}")
+
+    # Save upload to a temp file and ingest
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            content = file.file.read()
+            tmp.write(content)
+            tmp_path = Path(tmp.name)
+
+        result = get_pipeline().ingest_source(
+            conversation_id=conversation_id,
+            source_type=source_type,
+            input_value=tmp_path,
+            title=Path(file.filename or "upload").stem,
+        )
+        return result
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except GroqGenerationError as exc:
+        raise HTTPException(502, str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(502, f"File ingestion failed: {exc}") from exc
+    finally:
+        tmp_path.unlink(missing_ok=True)
 
 
 @router.get(

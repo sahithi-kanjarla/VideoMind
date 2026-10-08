@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
@@ -9,6 +10,10 @@ from app.api.chat import router as chat_router
 from app.db.database import init_supabase
 from app.services.ingestion.registry import register
 from app.services.ingestion.youtube import YouTubeIngestor
+from app.services.ingestion.pdf import PDFIngestor
+from app.services.ingestion.docx_ingestor import DocxIngestor
+from app.services.ingestion.text import TextIngestor
+from app.services.ingestion.markdown import MarkdownIngestor
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
@@ -23,7 +28,11 @@ async def lifespan(app: FastAPI):
         print(f"Supabase initialization: {e}")
 
     register("youtube", YouTubeIngestor())
-    print(f"Registered ingestors: youtube")
+    register("pdf", PDFIngestor())
+    register("docx", DocxIngestor())
+    register("text", TextIngestor())
+    register("markdown", MarkdownIngestor())
+    print("Registered ingestors: youtube, pdf, docx, text, markdown")
 
     yield
     print("App shutdown")
@@ -41,7 +50,7 @@ app.include_router(chat_router)
 app.include_router(conversations_router)
 app.include_router(youtube_router)
 
-frontend_path = Path(__file__).resolve().parents[2] / "frontend"
+frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 
 @app.get("/health")
@@ -52,10 +61,16 @@ def health_check():
     }
 
 
-if frontend_path.is_dir():
-    app.mount(
-        "/frontend",
-        StaticFiles(directory=frontend_path, html=True),
-        name="frontend-files",
-    )
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+# Static assets (JS, CSS, images) served at /assets/
+if frontend_dist.is_dir():
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="static-assets")
+
+    # SPA fallback — serve index.html for all non-API, non-asset routes
+    @app.get("/{path:path}")
+    def spa_fallback(path: str):
+        file_path = frontend_dist / path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(frontend_dist / "index.html")
